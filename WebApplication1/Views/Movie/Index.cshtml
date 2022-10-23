@@ -1,0 +1,52 @@
+﻿@using WebApplication1.Models.ViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<MovieDto>
+
+@{
+    ViewData["Title"] = "Movies";
+}
+
+@{
+    if (Model.Any() == true) {
+        <form asp-controller="Movie" asp-action="Index">
+            <input type="text" name="searchedWord" />
+            <button type="submit">Find</button>
+        </form>
+        <br />
+
+
+        <ul class="mytable headertable">
+            <li>@Html.DisplayNameFor(model => model.Title)</li>
+            <li>@Html.DisplayNameFor(model => model.ReleaseDate)</li>
+            <li>@Html.DisplayNameFor(model => model.Genre)</li>
+            <li>@Html.DisplayNameFor(model => model.Price)</li>
+            <li>Edit</li>
+            <li>Delete</li>
+        </ul>
+
+        foreach (var item in Model)
+        {
+            <ul class="mytable">
+                <li>@Html.DisplayFor(modelItem => item.Title)</li>
+                <li>@Html.DisplayFor(modelItem => item.ReleaseDate)</li>
+                <li>@Html.DisplayFor(modelItem => item.Genre)</li>
+                <li>@Html.DisplayFor(modelItem => item.Price)</li>
+                <li><a asp-action="EditMovie" asp-route-id="@item.Id">Edit</a></li>
+                <li><a asp-action="DeleteMovie" asp-route-id="@item.Id">Delete</a></li>
+            </ul>
+        }
+    }
+    else
+    {
+        <p>Not Found</p>
+        <a asp-action="Index">Back To All Movie</a>
+    }
+
+}
+
+
+
+
+

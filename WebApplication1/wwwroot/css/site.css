@@ -1,0 +1,31 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.mytable {
+    display:flex;
+    list-style:none;
+}
+
+.mytable.headertable {
+    font-weight:bold;
+}
+
+.mytable li {
+    margin: 0 10px;
+}
