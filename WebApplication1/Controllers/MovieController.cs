@@ -9,6 +9,7 @@ namespace WebApplication1.Controllers
 {
     public class MovieController : Controller
     {
+        //new comment add
         private readonly IMovieRepository _movieRepository;
         private readonly IMovieAdapter _movieAdapter;
 
