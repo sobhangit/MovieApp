@@ -6,7 +6,11 @@ using WebApplication1.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+
 builder.Services.AddScoped<IMovieAdapter, MovieAdapter>();
+builder.Services.AddScoped<IArticleAdapter, ArticleAdapter>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

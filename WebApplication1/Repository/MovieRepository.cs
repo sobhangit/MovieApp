@@ -19,10 +19,12 @@ namespace WebApplication1.Repository
 
         public void DeleteMovie(int id)
         {
-            if(GetMovieById(id) != null)
+
+            var movie = GetMovieById(id);
+            if( movie != null)
             {
-                _context.Movies.Remove(GetMovieById(id));
-                _context.SaveChanges();
+                movie.Is_Deleted = true;
+                _context.Movies.Update(movie);
             }
         }
 

@@ -4,25 +4,22 @@ using WebApplication1.DAL;
 using WebApplication1.Models;
 using WebApplication1.Models.ViewModel;
 using WebApplication1.Repository;
+using WebApplication1.Service.Contract;
 
 namespace WebApplication1.Controllers
 {
     public class MovieController : Controller
     {
         //new comment add
-        private readonly IMovieRepository _movieRepository;
-        private readonly IMovieAdapter _movieAdapter;
+        private readonly IMovieService _movieService;
 
-        public MovieController(IMovieRepository movieRepository,IMovieAdapter movieAdapter)
+        public MovieController(IMovieService movieService)
         {
-            _movieRepository = movieRepository;
-            _movieAdapter = movieAdapter;
+            _movieService = movieService;
         }
         public IActionResult Index()
         {
-            var movies = _movieRepository.GetAllMovies();
-            var movieDtos = _movieAdapter.GetDtos(movies);
-            
+            var movieDtos = _movieService.GetAllMovies();
             return View(movieDtos);
         }
 
@@ -59,10 +56,7 @@ namespace WebApplication1.Controllers
                 return View(moviedto);
             }
 
-            var movie = _movieAdapter.GetMovie(moviedto);
-
-            _movieRepository.AddMovie(movie);
-            _movieRepository.Save();
+            _movieService.AddMovieToDatabase(moviedto);
 
             ModelState.Clear();
 
@@ -71,14 +65,12 @@ namespace WebApplication1.Controllers
 
         public IActionResult GetMovie(int id)
         {
-            var movie = _movieRepository.GetMovieById(id);
+            var movieDto = _movieService.GetMovieById(id);
 
-            if (movie == null)
+            if (movieDto == null)
             {
                 return NotFound();
             }
-
-            var movieDto = _movieAdapter.GetDto(movie);
 
             return View(movieDto);
         }
@@ -86,15 +78,15 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult EditMovie(int id)
         {
-            var movie = _movieRepository.GetMovieById(id);
-            var movieDto = new MovieDto();
 
-            if (movie != null)
+            var movieDto = _movieService.GetMovieById(id);
+
+            if (movieDto != null)
             {
-                movieDto = _movieAdapter.GetDto(movie);
+                return View(movieDto);
             }
 
-            return View(movieDto);
+            return NotFound();
         }
 
         [HttpPost]
@@ -105,11 +97,8 @@ namespace WebApplication1.Controllers
                 return View(movieDto);
             }
 
-            var movie = _movieAdapter.GetMovie(movieDto);
+            _movieService.UpdateMovie(movieDto);
 
-
-            _movieRepository.UpdateMovie(movie);
-            _movieRepository.Save();
 
             ModelState.Clear();
 
@@ -123,9 +112,9 @@ namespace WebApplication1.Controllers
 
             MovieDto movieDto = new();
 
-            if (movie != null)
+            if (movie == null)
             {
-                movieDto = _movieAdapter.GetDto(movie);
+                return NotFound();
             }
 
             return View(movieDto);

@@ -16,5 +16,6 @@ namespace WebApplication1.DAL
         }
 
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Article> Articles {get;set;}
     }
 }

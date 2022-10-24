@@ -10,6 +10,10 @@ namespace WebApplication1.Models
         public DateTime ReleaseDate { get; set; }
         public string? Genre { get; set; }
         public decimal Price { get; set; }
-        public bool Is_Deleted { get; set; } = false;
+        public bool Is_Deleted { get; set; }
+
+        public DateTime CreateDate {get;set;} = DateTime.Now;
+
+
     }
 }
