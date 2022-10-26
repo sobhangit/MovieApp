@@ -10,7 +10,6 @@ namespace WebApplication1.Controllers
 {
     public class MovieController : Controller
     {
-        //new comment add
         private readonly IMovieService _movieService;
 
         public MovieController(IMovieService movieService)
@@ -26,16 +25,14 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult Index(string searchedWord)
         {
-
-            var movies = _movieRepository.GetAllMovies();
             var movieDtos = new List<MovieDto>();
-
             if (!String.IsNullOrEmpty(searchedWord))
             {
-                var moviesFounded = _movieRepository.GetMoviesByName(searchedWord);
-                movieDtos = _movieAdapter.GetDtos(moviesFounded);
-
-                return View(movieDtos);
+                movieDtos = _movieService.GetMoviesByName(searchedWord);
+                if (movieDtos.Any() == true)
+                {
+                    return View(movieDtos);
+                }
             }
 
             return View(movieDtos);
@@ -44,7 +41,6 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult AddMovie()
         {
-
             return View();
         }
 
@@ -56,14 +52,53 @@ namespace WebApplication1.Controllers
                 return View(moviedto);
             }
 
-            _movieService.AddMovieToDatabase(moviedto);
+            var movie_is_added = _movieService.AddMovie(moviedto);
+            
+            if (true)
+            {
+                ModelState.Clear();
+            }
 
-            ModelState.Clear();
-
+            //message for movie don't add to database
+            
             return View();
         }
 
         public IActionResult GetMovie(int id)
+        {
+            var movieDto = _movieService.GetMovieById(id);
+
+            return View(movieDto);
+        }
+
+        [HttpGet]
+        public IActionResult EditMovie(int id)
+        {
+            var movieDto = _movieService.GetMovieById(id);
+
+            return View(movieDto);
+        }
+
+        [HttpPost]
+        public IActionResult EditMovie(MovieDto movieDto)
+        {
+            if (ModelState.IsValid == false)
+            {
+                return View(movieDto);
+            }
+
+            var movie_is_updated = _movieService.UpdateMovie(movieDto);
+
+            if (movie_is_updated)
+            {
+                ModelState.Clear();
+                return RedirectToAction("Index");
+            }
+
+            return View(movieDto);
+        }
+
+        public IActionResult DeleteMovie(int id)
         {
             var movieDto = _movieService.GetMovieById(id);
 
@@ -75,57 +110,17 @@ namespace WebApplication1.Controllers
             return View(movieDto);
         }
 
-        [HttpGet]
-        public IActionResult EditMovie(int id)
-        {
-
-            var movieDto = _movieService.GetMovieById(id);
-
-            if (movieDto != null)
-            {
-                return View(movieDto);
-            }
-
-            return NotFound();
-        }
-
-        [HttpPost]
-        public IActionResult EditMovie(MovieDto movieDto)
-        {
-            if (ModelState.IsValid == false)
-            {
-                return View(movieDto);
-            }
-
-            _movieService.UpdateMovie(movieDto);
-
-
-            ModelState.Clear();
-
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult DeleteMovie(int id)
-        {
-            var movie = _movieRepository.GetMovieById(id);
-
-            MovieDto movieDto = new();
-
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            return View(movieDto);
-        }
-
         public IActionResult ConfirmDeleteMovie(int id)
         {
-            _movieRepository.DeleteMovie(id);
-            _movieRepository.Save();
+            var movie_is_deleted = _movieService.DeleteMovie(id);
+            if (movie_is_deleted)
+            {
+                _movieService.Save();
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("DeleteMovie",id);
             
-            return RedirectToAction("Index");
         }
 
     }

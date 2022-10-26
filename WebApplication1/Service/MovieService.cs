@@ -17,51 +17,73 @@ namespace WebApplication1.Service
             _movieAdapter = movieAdapter;
         }
 
-        public void DeleteMovie(int id)
+        public bool DeleteMovie(int id)
         {
-            _movieRepository.DeleteMovie(id);
-            _movieRepository.Save();
+            var movie_is_deleted = _movieRepository.DeleteMovie(id);
+            if (movie_is_deleted)
+            {
+                _movieRepository.Save();
+                return true;
+            }
+            return false;
+            
         }
 
         public List<MovieDto> GetAllMovies()
         {
             var movies = _movieRepository.GetAllMovies();
-
+            if (movies.Any() == false)
+            {
+               return new List<MovieDto>{ new MovieDto()};
+            }
             return _movieAdapter.GetDtos(movies);
         }
 
         public MovieDto GetMovieById(int id)
         {
             var movie = _movieRepository.GetMovieById(id);
+            if (movie == null)
+            {
+                return new MovieDto();
+            }
             return _movieAdapter.GetDto(movie);
         }
 
         public List<MovieDto> GetMoviesByName(string name)
         {
             var movies = _movieRepository.GetMoviesByName(name);
-            if (movies != null)
+            if (movies == null)
             {
-                return _movieAdapter.GetDtos(movies);
+                return new List<MovieDto> { new MovieDto()};
             }
 
-            List<MovieDto> movieDtos = new List<MovieDto>();
-            movieDtos.Add(new MovieDto());
-
-
-            return movieDtos;
+            return _movieAdapter.GetDtos(movies);
         }
 
-        public void UpdateMovie(MovieDto movieDto)
+        public bool UpdateMovie(MovieDto movieDto)
         {
             var movie = _movieAdapter.GetMovie(movieDto);
-            _movieRepository.UpdateMovie(movie);
+            var movie_is_update = _movieRepository.UpdateMovie(movie);
+
+            if (movie_is_update == false) return false;
+
             _movieRepository.Save();
+            return true;
         }
 
-        public void AddMovieToDatabase(MovieDto movieDto)
+        public bool AddMovie(MovieDto movieDto)
         {
             var movie = _movieAdapter.GetMovie(movieDto);
-            _movieRepository.AddMovie(movie);
+
+            var is_movie_added = _movieRepository.AddMovie(movie);
+            if(is_movie_added == false) return false;
+
+            _movieRepository.Save();
+            return true;
+        }
+
+        public void Save()
+        {
             _movieRepository.Save();
         }
     }

@@ -8,8 +8,9 @@ namespace WebApplication1.Service.Contract
         List<MovieDto> GetAllMovies();
         MovieDto GetMovieById(int id);
         List<MovieDto> GetMoviesByName(string name);
-        void DeleteMovie(int id);
-        void UpdateMovie(MovieDto movieDto);
-        void AddMovieToDatabase(MovieDto movieDto);
+        bool DeleteMovie(int id);
+        bool UpdateMovie(MovieDto movieDto);
+        bool AddMovie(MovieDto movieDto);
+        void Save();
     }
 }

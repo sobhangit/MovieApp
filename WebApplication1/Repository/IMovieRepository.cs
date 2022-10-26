@@ -7,9 +7,9 @@ namespace WebApplication1.Repository
         List<Movie> GetAllMovies();
         Movie GetMovieById(int id);
         List<Movie> GetMoviesByName(string name);
-        void AddMovie(Movie movie);
-        void UpdateMovie(Movie movie);
-        void DeleteMovie(int id);
+        bool AddMovie(Movie movie);
+        bool UpdateMovie(Movie movie);
+        bool DeleteMovie(int id);
         void Save();
     }
 }

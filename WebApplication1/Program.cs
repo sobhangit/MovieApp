@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.Adapter;
 using WebApplication1.DAL;
 using WebApplication1.Repository;
+using WebApplication1.Service;
+using WebApplication1.Service.Contract;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 
 builder.Services.AddScoped<IMovieAdapter, MovieAdapter>();
 builder.Services.AddScoped<IArticleAdapter, ArticleAdapter>();
+
+builder.Services.AddScoped<IMovieService, MovieService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

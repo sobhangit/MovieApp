@@ -12,20 +12,48 @@ namespace WebApplication1.Repository
             _context = context;
         }
 
-        public void AddMovie(Movie movie)
+        public bool AddMovie(Movie movie)
         {
-            _context.Movies.Add(movie);
+            if (movie == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                _context.Movies.Add(movie);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        public void DeleteMovie(int id)
+        public bool DeleteMovie(int id)
         {
-
+            
             var movie = GetMovieById(id);
-            if( movie != null)
+
+            if (movie == null)
             {
-                movie.Is_Deleted = true;
+                return false;
+            }
+
+            movie.Is_Deleted = true;
+
+            try
+            {
                 _context.Movies.Update(movie);
             }
+            catch (Exception)
+            {
+                return false;
+            }
+            
+
+            return true;
         }
 
         public List<Movie> GetAllMovies()
@@ -35,7 +63,10 @@ namespace WebApplication1.Repository
 
         public Movie GetMovieById(int id)
         {
-            return _context.Movies.FirstOrDefault(x => x.Id == id);
+            var movie = _context.Movies.FirstOrDefault(x => x.Id == id);
+            
+            return movie;
+ 
         }
 
         public List<Movie> GetMoviesByName(string name)
@@ -48,9 +79,16 @@ namespace WebApplication1.Repository
             _context.SaveChanges();
         }
 
-        public void UpdateMovie(Movie movie)
+        public bool UpdateMovie(Movie movie)
         {
+            if (movie == null)
+            {
+                return false;
+            }
+
             _context.Movies.Update(movie);
+
+            return true;
         }
     }
 }
